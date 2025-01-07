@@ -1,16 +1,15 @@
 package com.project.oop.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.project.oop.tools.Json;
 import com.project.oop.model.Client;
 import com.project.oop.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ClientService {
@@ -28,32 +27,29 @@ public class ClientService {
         clientRepository.save(new Client(code, firstName, lastName, phoneNumber, email, pin, admin));
         return "success";
     }
+
     public String loggingClient(String json){
         String code;
         String nip;
+        ObjectNode response = Json.createNode();
         try {
-            Map<String, String> fields = Stream.of(json.split("&"))
-                    .map(entry -> entry.split("="))
-                    .collect(Collectors.toMap(
-                            entry -> entry[0],  // Key
-                            entry -> entry[1]   // Value
-                    ));
-            code = fields.get("Code");
-            nip = fields.get("NIP");
+            JsonNode node = Json.toJson(json);
+            code = node.get("Code").asText();
+            nip = node.get("NIP").asText();
             Optional<Client> clientConnect = clientRepository.findByCode(code);
-            System.out.println(clientConnect.get().getCode());
-            System.out.println(nip);
-            if (Objects.equals(clientConnect.get().getPin(), nip)) {
-                return "success";
+            if (clientConnect.isEmpty()) {
+                response.put("Message", "Client not found");
+            } else if (Objects.equals(clientConnect.get().getPin(), nip)) {
+                response.put("Message", "Sucessfully logged in");
+                response.put("id", clientConnect.get().getId());
+                response.put("admin", clientConnect.get().getAdmin());
             } else {
-                return"pin doesnt match code";
+                response.put("Message", "Pin Incorrect");
             }
-
-
+            return response.toString();
         } catch (Exception e) {
             // Handle parsing errors
             return "Error parsing input: " + e.getMessage();
         }
-
     }
 }
