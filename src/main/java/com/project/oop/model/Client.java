@@ -34,8 +34,8 @@ public class Client {
         this.admin = admin;
     }
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return id.toString();
     }
 
     public void setId(Long id) {

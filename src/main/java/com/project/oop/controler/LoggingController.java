@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 public class LoggingController {
@@ -30,15 +27,9 @@ public class LoggingController {
     public List<Client> listAll (){
         return clientRepository.findAll();
     }
-
-    @GetMapping("/clientcreation")
-    public String clientcreation(){
-        return clientService.createClient("1234", "maxime","laberge", "438", "email", "1234", true);
-
-    }
     @PostMapping("/logging")
-    public String logging(@RequestBody String jsonLogging ){
-         String clientConnected = clientService.loggingClient(jsonLogging);
+    public String logging(@RequestBody String json ){
+         String clientConnected = clientService.loggingClient(json);
          return clientConnected;
     }
 

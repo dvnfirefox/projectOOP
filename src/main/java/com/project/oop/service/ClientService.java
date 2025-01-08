@@ -16,16 +16,43 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public String createClient(
-            String code,
-            String firstName,
-            String lastName,
-            String phoneNumber,
-            String email,
-            String pin,
-            boolean admin) {
-        clientRepository.save(new Client(code, firstName, lastName, phoneNumber, email, pin, admin));
-        return "success";
+
+    public String clientList() {
+        ObjectNode response = Json.createNode();
+        clientRepository.findAll().forEach(client ->
+                response.put(client.getId(), client.getCode())
+        );
+        return response.toString();
+    }
+
+
+    public String createClient(String json) {
+        ObjectNode response = Json.createNode();
+        try{
+            JsonNode node = Json.toJson(json);
+            String code = node.get("code").asText();
+            String firstName = node.get("name").asText();
+            String lastName = node.get("lastName").asText();
+            String phoneNumber = node.get("phoneNumber").asText();
+            String email = node.get("email").asText();
+            String pin = node.get("nip").asText();
+            boolean admin = node.get("admin").asBoolean();
+
+            if(clientRepository.findByCode(code).isPresent()){
+                response.put("message", "Client already exists");
+                response.put("created", Boolean.FALSE);
+            }else {
+                clientRepository.save(new Client(code, firstName, lastName, phoneNumber, email, pin, admin));
+                response.put("message", "Client created");
+                response.put("created", Boolean.TRUE);
+            }
+
+        } catch (Exception E){
+            response.put("message", "Error parsing input: " + E.getMessage());
+            response.put("created", Boolean.FALSE);
+        }
+
+        return response.toString();
     }
 
     public String loggingClient(String json){
