@@ -15,12 +15,14 @@ import java.util.Optional;
 public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    public AccountService accountService;
 
 
     public String clientList() {
         ObjectNode response = Json.createNode();
         clientRepository.findAll().forEach(client ->
-                response.put(client.getId(), client.getCode())
+                response.put(client.getCode(), client.getCode())
         );
         return response.toString();
     }
@@ -43,6 +45,7 @@ public class ClientService {
                 response.put("created", Boolean.FALSE);
             }else {
                 clientRepository.save(new Client(code, firstName, lastName, phoneNumber, email, pin, admin));
+                accountService.createAccount("1", code);
                 response.put("message", "Client created");
                 response.put("created", Boolean.TRUE);
             }
@@ -68,7 +71,7 @@ public class ClientService {
                 response.put("Message", "Client not found");
             } else if (Objects.equals(clientConnect.get().getPin(), nip)) {
                 response.put("Message", "Sucessfully logged in");
-                response.put("id", clientConnect.get().getId());
+                response.put("id", clientConnect.get().getCode());
                 response.put("admin", clientConnect.get().getAdmin());
             } else {
                 response.put("Message", "Pin Incorrect");

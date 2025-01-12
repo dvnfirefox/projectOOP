@@ -32,6 +32,12 @@ public class LoggingController {
          String clientConnected = clientService.loggingClient(json);
          return clientConnected;
     }
+    @GetMapping("/setup")
+    public String setup() {
+        String jsonString = "{\"code\":\"admin\",\"name\":\"admin\",\"lastName\":\"admin\",\"phoneNumber\":\"admin\",\"email\":\"admin\",\"nip\":\"admin\",\"admin\":true}";
+        return clientService.createClient(jsonString);
+    }
+
 
 
 }

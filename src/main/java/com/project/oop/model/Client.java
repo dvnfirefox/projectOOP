@@ -12,9 +12,6 @@ public class Client {
 
 
     private String code;
-
-
-
     private String firstName;
     private String lastName;
     private String phoneNumber;
