@@ -45,7 +45,7 @@ public class ClientService {
                 response.put("created", Boolean.FALSE);
             }else {
                 clientRepository.save(new Client(code, firstName, lastName, phoneNumber, email, pin, admin));
-                accountService.createAccount("1", code);
+                accountService.createAccount("1", code, "Main checking");
                 response.put("message", "Client created");
                 response.put("created", Boolean.TRUE);
             }
@@ -68,17 +68,46 @@ public class ClientService {
             nip = node.get("NIP").asText();
             Optional<Client> clientConnect = clientRepository.findByCode(code);
             if (clientConnect.isEmpty()) {
-                response.put("Message", "Client not found");
+                response.put("message", "Client not found");
             } else if (Objects.equals(clientConnect.get().getPin(), nip)) {
-                response.put("Message", "Sucessfully logged in");
+                int attempts = clientConnect.get().getAttempts();
+                if(attempts > 3){
+                    response.put("message", "too many attempts youre now blocked, please contact your administrator");
+                    return response.toString();
+                }
+                clientConnect.get().setAttempts(0);
+                clientRepository.save(clientConnect.get());
+                response.put("message", "Sucessfully logged in");
                 response.put("id", clientConnect.get().getCode());
                 response.put("admin", clientConnect.get().getAdmin());
             } else {
-                response.put("Message", "Pin Incorrect");
+                int attempts = clientConnect.get().getAttempts();
+                attempts += 1;
+                if(attempts > 3){
+                    clientConnect.get().setAttempts(attempts);
+                    clientRepository.save(clientConnect.get());
+                    response.put("message", "too many attempts youre now blocked, please contact your administrator");
+                }else{
+                    clientConnect.get().setAttempts(attempts);
+                    clientRepository.save(clientConnect.get());
+                    int attemptsRemaining = 4 - attempts;
+                    response.put("message", "pin incorrect at youre third attempt youre blocked. attemp remaining : " + attemptsRemaining);
+                }
+
             }
             return response.toString();
         } catch (Exception e) {
             // Handle parsing errors
+            return "Error parsing input: " + e.getMessage();
+        }
+    }
+    public String unblockClient(String code){
+        try{
+            Optional<Client> clientConnect = clientRepository.findByCode(code);
+            clientConnect.get().setAttempts(0);
+            clientRepository.save(clientConnect.get());
+            return "sucessfully unblocked";
+        }catch (Exception e) {
             return "Error parsing input: " + e.getMessage();
         }
     }

@@ -18,6 +18,8 @@ public class Client {
     private String email;
     private String pin;
     private Boolean admin;
+    private Boolean blocked;
+    private int attempts;
 
     public Client() {}
 
@@ -29,6 +31,8 @@ public class Client {
         this.email = email;
         this.pin = pin;
         this.admin = admin;
+        this.blocked = false;
+        this.attempts = 0;
     }
 
     public String getId() {
@@ -93,5 +97,21 @@ public class Client {
 
     public void setAdmin(Boolean admin) {
         this.admin = admin;
+    }
+
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
     }
 }

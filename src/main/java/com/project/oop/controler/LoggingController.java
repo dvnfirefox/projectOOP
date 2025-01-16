@@ -34,8 +34,14 @@ public class LoggingController {
     }
     @GetMapping("/setup")
     public String setup() {
-        String jsonString = "{\"code\":\"admin\",\"name\":\"admin\",\"lastName\":\"admin\",\"phoneNumber\":\"admin\",\"email\":\"admin\",\"nip\":\"admin\",\"admin\":true}";
-        return clientService.createClient(jsonString);
+        String adminString = "{\"code\":\"admin\",\"name\":\"admin\",\"lastName\":\"admin\",\"phoneNumber\":\"admin\",\"email\":\"admin\",\"nip\":\"admin\",\"admin\":true}";
+        clientService.createClient(adminString);
+        String clientString = "{\"code\":\"test\",\"name\":\"test\",\"lastName\":\"test\",\"phoneNumber\":\"test\",\"email\":\"test\",\"nip\":\"test\",\"admin\":false}";
+        return clientService.createClient(clientString);
+    }
+    @PostMapping("/unblock")
+    public String unblock(@RequestBody String code ){
+        return clientService.unblockClient(code);
     }
 
 
