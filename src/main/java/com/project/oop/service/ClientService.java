@@ -39,14 +39,16 @@ public class ClientService {
             String email = node.get("email").asText();
             String pin = node.get("nip").asText();
             boolean admin = node.get("admin").asBoolean();
-
             if(clientRepository.findByCode(code).isPresent()){
                 response.put("message", "Client already exists");
                 response.put("created", Boolean.FALSE);
-            }else {
+            } else if (pin.length() != 4) {
+                response.put("message", "pin need to be 4 digits");
+                response.put("created", Boolean.FALSE);
+            } else {
                 clientRepository.save(new Client(code, firstName, lastName, phoneNumber, email, pin, admin));
-                accountService.createAccount("1", code, "Main checking");
-                response.put("message", "Client created");
+                String message =  accountService.createAccount("1", code, "Main checking");
+                response.put("message", message);
                 response.put("created", Boolean.TRUE);
             }
 

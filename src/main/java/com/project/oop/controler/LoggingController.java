@@ -2,6 +2,7 @@ package com.project.oop.controler;
 
 import com.project.oop.model.Client;
 import com.project.oop.repository.ClientRepository;
+import com.project.oop.service.AtmService;
 import com.project.oop.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,8 @@ public class LoggingController {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private AtmService atmService;
 
     @GetMapping("/test")
     public String test() {
@@ -34,9 +37,10 @@ public class LoggingController {
     }
     @GetMapping("/setup")
     public String setup() {
-        String adminString = "{\"code\":\"admin\",\"name\":\"admin\",\"lastName\":\"admin\",\"phoneNumber\":\"admin\",\"email\":\"admin\",\"nip\":\"admin\",\"admin\":true}";
+        String adminString = "{\"code\":\"admin\",\"name\":\"admin\",\"lastName\":\"admin\",\"phoneNumber\":\"admin\",\"email\":\"admin\",\"nip\":\"1234\",\"admin\":true}";
         clientService.createClient(adminString);
-        String clientString = "{\"code\":\"test\",\"name\":\"test\",\"lastName\":\"test\",\"phoneNumber\":\"test\",\"email\":\"test\",\"nip\":\"test\",\"admin\":false}";
+        atmService.setup();
+        String clientString = "{\"code\":\"first Client\",\"name\":\"Maxime\",\"lastName\":\"Laberge\",\"phoneNumber\":\"438-395-4369\",\"email\":\"test@gmail.com\",\"nip\":\"1234\",\"admin\":false}";
         return clientService.createClient(clientString);
     }
     @PostMapping("/unblock")

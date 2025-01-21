@@ -13,13 +13,13 @@ public class Account {
 
 
     public String type;
-    public int balance;
+    public double balance;
     public String clientCode;
     public String name;
 
     public Account(){}
 
-    public Account(String type, int balance, String clientCode, String name) {
+    public Account(String type, double balance, String clientCode, String name) {
         this.type = type;
         this.balance = balance;
         this.clientCode = clientCode;
@@ -41,11 +41,11 @@ public class Account {
         this.type = type;
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 

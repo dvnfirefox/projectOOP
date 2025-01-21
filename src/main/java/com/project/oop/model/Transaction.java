@@ -67,4 +67,12 @@ public class Transaction {
     public void setInfo(String info) {
         this.info = info;
     }
+
+    public String getNewAmount() {
+        return newAmount;
+    }
+
+    public void setNewAmount(String newAmount) {
+        this.newAmount = newAmount;
+    }
 }
